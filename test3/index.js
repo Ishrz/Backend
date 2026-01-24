@@ -1,9 +1,24 @@
-const fs=require('fs')
+const express= require('express')
+const app=express()
+app.use(express())
 
-console.log(process.argv[2])
-// console.log(fs.readFile('./t.text'))
-fs.readFile(process.argv[2],'utf8',(err,data)=>{
-    console.log(data)
+
+const notes=[]
+
+app.get("notes",(req,res)=>{
+    console.log("notes route hit")
+})
+
+app.post('notes',(req,res)=>{
+    console.log(req.body)
+
+    notes.push(req.body)
+    
+    res.send("note created")
+})
+
+app.listen(3000,()=>{
+    console.log("server started....")
 })
 
 
