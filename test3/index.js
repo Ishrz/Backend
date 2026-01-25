@@ -27,7 +27,8 @@ app.put('/notes/update/:id',(req,res)=>{
         if(notes[i].id == id){
             notes[i]=data
             console.log(notes)
-            res.status(205).send(`resoursce updated with note  data`)
+
+            res.json("resoursce updated with note  data")
         }else{
             res.status(200).send("cant find the resource")
         }
