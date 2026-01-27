@@ -1,6 +1,9 @@
 const express =require('express')
+const dbConnection=require('./db/dbConnection')
 
 const app=express()
+
+dbConnection()
 
 app.use(express.json())
 
