@@ -4,7 +4,7 @@ const app=express()
 
 app.use(express.json())
 
-const users=[{name:"shaikh",id:1},{name:"khan",id:2},{name:"xyz",id:2}]
+const users=[{name:"shaikh",id:1},{name:"khan",id:2},{name:"xyz",id:3}]
 
 app.get('/users',(req,res)=>{
     console.log("get users route hit sending users list to client....")
@@ -13,33 +13,35 @@ app.get('/users',(req,res)=>{
 })
 
 app.post('/users',(req,res)=>{
-    const {name}=req.body
+    const newUser=req.body
     
-    console.log(`users post route hit with ${name} adding it in users `)
-    users.push(name)
+    console.log(`users post route hit with ${newUser.name} adding it in users `)
+    users.push({...newUser})
     res.status(201).json("new resource added in users list")
 
     console.log(users)
 
 })
 
-app.put('/users:index',(req,res)=>{
+app.patch('/users/:index',(req,res)=>{
+    const {index}=req.params
+    const {name} =req.body
 
         console.log(`users put route hit with ${index} updating its user in users `)
 
-        const {name} =req.body
-        
         for(let i=0; i<users.length;i++){
-                if(users[i+1]==index){
+                if(users[i].id==index){
                     users[i].name=name
                     res.json("name is updated")
                 }
         }
     })
 
-app.delete('/users',(req,res)=>{
+app.delete('/users/:index',(req,res)=>{
+    console.log("delet route hit")
+    const {index}=req.params
     const {name}=req.body
-
+     console.log(name)
     for(let i=0;i<users.length;i++){
         if(users[i].name ==name){
             users[i]=null
