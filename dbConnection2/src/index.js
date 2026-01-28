@@ -5,19 +5,19 @@ const app=express()
 
 app.use(express.json())
 
-app.get('/users',(req,res)=>{
-    const usersdata=noteModel.find
-    res.json(`heres your data : ${usersdata}`)
+app.get('/notes',async (req,res)=>{
+    const notesdata=await noteModel.find()
+    res.json({notes_data : notesdata})
 })
 
 
-app.post('/users',(req,res)=>{
+app.post('/notes',async(req,res)=>{
     const {title,content} = req.body
     console.log(title ,  content)
 
-    noteModel.create({title,content})
+    await noteModel.create({title,content})
 
-    res.json("data recieved")
+    res.status(201).json("data created succesfully")
 })
 
 
