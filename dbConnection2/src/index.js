@@ -20,6 +20,31 @@ app.post('/notes',async(req,res)=>{
     res.status(201).json("data created succesfully")
 })
 
+app.delete('/notes/:id',async(req,res)=>{
+    const id=req.params.id
+    // console.log(id)
+    await noteModel.findByIdAndDelete({
+        _id:id
+    })
+
+    res.json("Deleted successfuly")
+})
+
+app.patch('/notes/:id',async(req,res)=>{
+    const id=req.params.id
+    const {title} = req.body
+
+    const updateData=await noteModel.findByIdAndUpdate(
+        {
+            _id:id
+        },
+        {
+            title
+        })
+
+    res.json({Your_Updated_data:updateData})
+})
+
 
 
 
