@@ -4,9 +4,11 @@ const app = express()
 
 
 app.use(express.json())
-
+app.use(express.cors())
 
 app.get("/user",(req,res)=>{
+
+    
 
 })
 

@@ -2,7 +2,7 @@ const app=require("./src/index.js")
 
 
 
-
+const PORT =process.env.PORT || 6000
 
 
 
