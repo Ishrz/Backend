@@ -6,7 +6,17 @@ const app=express()
 const jsonFnc=express.json()
 // app.use(express.json())
 
-app.get("/user",jsonFnc,(req,res)=>{
+app.get("/user/:name/:role/:isPaid",jsonFnc,(req,res)=>{
+        const {name,role,isPaid} = req.params
+        console.log("hit")
+        console.log(req.query)
+
+        console.log(name ,role, isPaid)
+        res.end(`Hello ${name} your role ${role} is approved `)
+})
+
+
+app.post("/user",jsonFnc,(req,res)=>{
         const {name,role,isPaid} = req.body
         console.log(name,role,isPaid)
         if(!isPaid){
