@@ -25,8 +25,7 @@ app.post("/signin",(req,res)=>{
 
     console.log(allUsers)
     res.status(201).json({
-        message:"Congratulation your successfully signed-in",
-        data:{username,password}
+        message:"Congratulation your account is created"
     })
 })
 
@@ -40,16 +39,32 @@ app.post("/signup",(req,res)=>{
                 const token=getToken()
                 currentUser.token=token
                 res.json({
-                    message:"authentication done heres your new data",
-                    data:currentUser
+                    message:"you are now login to portal",
+                    token:token
                 })
             }else{
-                console.log("authentication failed")
+                console.log("User not found")
 
-                console.log("from failed auth",allUsers)
-
-            res.json({message:"your are not authenticate"})
+            res.json({message:"Invalid Credential"})
         }
+
+app.get("/me",(req,res)=>{
+        const token=req.headers.token
+
+        const currentUser=allUsers.find(u => u.token === token)
+
+        console.group("Token check")
+        console.log(currentUser)
+
+        if(currentUser){
+            res.json({
+                message:"Heres your requested data",
+                data:{username:currentUser.username,password:currentUser.password}
+            })
+        }else{
+            res.json("unauhtenticated User")
+        }
+})
         console.log("from end of post method code: ",allUsers)
 })
 
