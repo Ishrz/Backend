@@ -1,6 +1,9 @@
 const express=require("express")
+const jwt=require('jsonwebtoken')
 
 const app=express()
+
+const JSON_SECRET="xyz123"
 
 app.use(express.json())
 
@@ -19,7 +22,7 @@ app.post("/signin",(req,res)=>{
     const {username,password} = req.body
 
     allUsers.push({
-        user:username,
+        username:username,
         password:password
     })
 
@@ -32,12 +35,17 @@ app.post("/signin",(req,res)=>{
 app.post("/signup",(req,res)=>{
         const {username,password} = req.body
 
-        const currentUser=allUsers.find(u=> (u.user === username && u.password === password))
+        const currentUser=allUsers.find(u=> (u.username === username && u.password === password))
 
             if(currentUser){
                 console.log("before Token",allUsers)
-                const token=getToken()
-                currentUser.token=token
+
+                // const token=getToken()
+                // currentUser.token=token
+                const token=jwt.sign({
+                    ...currentUser
+                },JSON_SECRET)
+
                 res.json({
                     message:"you are now login to portal",
                     token:token
@@ -48,10 +56,15 @@ app.post("/signup",(req,res)=>{
             res.json({message:"Invalid Credential"})
         }
 
+        console.log("from end of post method code: ",allUsers)
+})
+
 app.get("/me",(req,res)=>{
         const token=req.headers.token
 
-        const currentUser=allUsers.find(u => u.token === token)
+        const decodedToken=jwt.verify(token,JSON_SECRET)
+        const username=decodedToken.username
+        const currentUser=allUsers.find(u => u.username === username)
 
         console.group("Token check")
         console.log(currentUser)
@@ -59,13 +72,12 @@ app.get("/me",(req,res)=>{
         if(currentUser){
             res.json({
                 message:"Heres your requested data",
-                data:{username:currentUser.username,password:currentUser.password}
+                data:{username:currentUser.username,password:currentUser.password},
+                token:decodedToken
             })
         }else{
             res.json("unauhtenticated User")
         }
-})
-        console.log("from end of post method code: ",allUsers)
 })
 
 
