@@ -9,14 +9,14 @@ app.use(express.json())
 
 const allUsers=[]
 
-const getToken = ()=>{
-    const options=["A","B","C","D","a","b","c","d",1,2,3,4]
-    let token=''
-    for(let i=0; i<options.length;i++)
-    token +=options[Math.floor(Math.random()*options.length)]
+// const getToken = ()=>{
+//     const options=["A","B","C","D","a","b","c","d",1,2,3,4]
+//     let token=''
+//     for(let i=0; i<options.length;i++)
+//     token +=options[Math.floor(Math.random()*options.length)]
 
-    return token
-}
+//     return token
+// }
 
 app.post("/signin",(req,res)=>{
     const {username,password} = req.body
@@ -57,13 +57,32 @@ app.post("/signup",(req,res)=>{
         }
 
         console.log("from end of post method code: ",allUsers)
+        
 })
 
-app.get("/me",(req,res)=>{
-        const token=req.headers.token
+const auth=(req,res,next)=>{
+const token=req.headers.token
 
-        const decodedToken=jwt.verify(token,JSON_SECRET)
-        const username=decodedToken.username
+try{
+    const {username}=jwt.verify(token,JSON_SECRET)
+
+    if(username){
+        req.username=username
+        next()
+    }else{
+        res.json("not authenticated user")
+    }
+}catch(err){
+    console.log(`Error : ${err}`)
+}
+
+
+}
+
+app.get("/me",auth,(req,res)=>{
+        
+ 
+        const username=req.username
         const currentUser=allUsers.find(u => u.username === username)
 
         console.group("Token check")
@@ -72,8 +91,8 @@ app.get("/me",(req,res)=>{
         if(currentUser){
             res.json({
                 message:"Heres your requested data",
-                data:{username:currentUser.username,password:currentUser.password},
-                token:decodedToken
+                data:{username:currentUser.username},
+                // token:decodedToken
             })
         }else{
             res.json("unauhtenticated User")
