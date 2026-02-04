@@ -1,10 +1,12 @@
 const express=require("express")
 const jwt=require('jsonwebtoken')
 
+
 const app=express()
 
 const JSON_SECRET="xyz123"
 
+app.use(express.static('./public'))
 app.use(express.json())
 
 const allUsers=[]
