@@ -7,23 +7,42 @@
     <style> html,body{
         background-color: gray;
     }</style>
+
+    <script>
+
+        let signupusername=document.querySelector("#signup-username").value
+        let signuppassword=document.querySelector("#signup-password").value
+        let signupbtn=document.querySelector("#signup-btn")
+
+
+        document.querySelector("#signup-btn").addEventListener("click",()=>{
+            alert(`heres your data : username: ${signupusername} , password: ${signuppassword}`)
+        })
+
+        let signinusername=document.querySelector("#signin-username").value
+        let signinpassword=document.querySelector("#signin-password").value
+        let signinbtn=document.querySelector("#signin-btn")
+
+
+
+    </script>
 </head>
 <body>
     <h1>Authentication page</h1>
     <div>
 
         <h2>SignUp</h2>
-        <input placeholder="username" type="text">
-        <input placeholder="password" type="text">
-        <button>Sign Up</button>
+        <input id="signup-username" placeholder="username" type="text">
+        <input id="signup-password" placeholder="password" type="text">
+        <button id="signup-btn">Sign Up</button>
     </div>
 
     <div>
 
         <h2>SignIn</h2>
-        <input placeholder="username" type="text">
-        <input placeholder="password" type="text">
-        <button>Sign In</button>
+        <input id="signin-username" placeholder="username" type="text">
+        <input id="signin-password" placeholder="password" type="text">
+        <button id="signin-btn">Sign In</button>
     </div>
 
     <div>
