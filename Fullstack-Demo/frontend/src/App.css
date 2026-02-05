@@ -44,6 +44,22 @@ body{
   margin-inline: 2rem;
 }
 
+#btn2{
+  padding-inline: 10px;
+  padding-block: 10px;
+  font-size: 20px;
+  border-radius: 10px;
+  background-color: rgb(231, 64, 59);
+  margin-inline: 2rem;
+}
+
+#btnsDiv{
+  display: flex;
+  gap: 5px;
+  margin-top: 2rem;
+  background-color: rgb(130, 137, 231);
+}
+
 #btn:active{
   scale: 0.95;
 }
