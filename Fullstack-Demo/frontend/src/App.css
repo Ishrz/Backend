@@ -1,0 +1,36 @@
+*{
+  padding: 0%;
+  margin: 0%;
+  box-sizing: border-box;
+}
+
+html,body,#rrot{
+  height: 100%;
+  width: 100%;
+}
+
+body{
+  background-color: gray;
+}
+
+
+#note{
+  background-color: rgb(168, 133, 133);
+  max-width: 25rem;
+  border-radius: 1rem;
+  padding-inline: 2rem;
+  padding-block: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgb(58, 50, 45);
+
+}
+
+#notes{
+  display: flex;
+  gap: 1rem;
+  padding-block: 1rem;
+  padding-inline:1rem ;
+}
