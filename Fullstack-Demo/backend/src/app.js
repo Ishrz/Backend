@@ -32,12 +32,12 @@ app.post("/notes", async (req, res) => {
 
 app.patch("/notes/:id", async (req, res) => {
   const  {id}  = req.params;
-  const { description } = req.body;
+  const data = req.body.data;
 
   const notes = await notesModel.findByIdAndUpdate(
     id,
     {
-      description,
+      ...data,
     },
     {
       new: true,
@@ -50,6 +50,14 @@ app.patch("/notes/:id", async (req, res) => {
   })
 });
 
-app.delete("/notes:id", (req, res) => {});
+app.delete("/notes/:id",async (req, res) => {
+    const {id} = req.params
+    const note= await notesModel.findByIdAndDelete(id)
+
+    res.status(200).json({
+        message:"deleted note successfully",
+        note:note
+    })
+});
 
 module.exports = app;
