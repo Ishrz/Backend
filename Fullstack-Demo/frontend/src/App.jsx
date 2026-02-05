@@ -1,12 +1,15 @@
 import { useState } from "react";
+import axios from "axios"
 import "./App.css";
 
 function App() {
-  const [notes, setNotes] = useState([
-    { title: "note1 ", description: "description 1" },
-    { title: "note2 ", description: "description 2" },
-    { title: "note3 ", description: "description 3" },
-  ]);
+  const [notes, setNotes] = useState([]);
+
+  const btnClick =async ()=>{
+    const axData=await axios.get("http://127.0.0.1:3000/notes")
+    // console.log(axData)
+    setNotes(axData.data.notes)
+  }
 
   return (
     <>
@@ -17,6 +20,11 @@ function App() {
             <h2>{note.description}</h2>
           </div>
         ))}
+      </div>
+      <div>
+        <button id="btn" onClick={btnClick}>
+          Get Notes
+        </button>
       </div>
     </>
   );

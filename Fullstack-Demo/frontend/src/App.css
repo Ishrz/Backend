@@ -34,3 +34,16 @@ body{
   padding-block: 1rem;
   padding-inline:1rem ;
 }
+
+#btn{
+  padding-inline: 15px;
+  padding-block: 15px;
+  font-size: 20px;
+  border-radius: 10px;
+  background-color: rgb(87, 170, 87);
+  margin-inline: 2rem;
+}
+
+#btn:active{
+  scale: 0.95;
+}

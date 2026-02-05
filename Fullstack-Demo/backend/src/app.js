@@ -4,7 +4,9 @@ const notesModel = require("./models/notes.model");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    Domain:["http://localhost:5173/"]
+}));
 app.use(express.json());
 
 app.get("/notes", async (req, res) => {
