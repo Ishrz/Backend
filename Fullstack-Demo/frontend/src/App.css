@@ -15,7 +15,7 @@ body{
 
 
 #note{
-  background-color: rgb(168, 133, 133);
+  background:radial-gradient( rgb(226, 95, 95),rgb(231, 140, 148),rgb(224, 138, 132));
   max-width: 25rem;
   border-radius: 1rem;
   padding-inline: 2rem;
@@ -25,6 +25,7 @@ body{
   align-items: center;
   justify-content: center;
   color: rgb(58, 50, 45);
+
 
 }
 
@@ -57,9 +58,35 @@ body{
   display: flex;
   gap: 5px;
   margin-top: 2rem;
-  background-color: rgb(130, 137, 231);
+  background: linear-gradient(rgb(235, 139, 139),rgb(156, 243, 156));
+  border-radius: 20px;
 }
 
 #btn:active{
   scale: 0.95;
+}
+
+.submitNotes{
+margin-inline: 1rem;
+margin-block: 1.5rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 1rem;
+font-size: 1.5rem;
+font-weight: 700;
+
+}
+.submitNotes input{
+font-size: 25px;
+}
+
+.submitNotes button{
+   padding-inline: 10px;
+  padding-block: 10px;
+  font-size: 15px;
+  border-radius: 10px;
+  background-color: rgb(124, 137, 253);
+  margin-inline: 2rem;
 }

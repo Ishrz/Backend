@@ -18,12 +18,39 @@ function App() {
     console.log(response)
   }
 
+  const submitHandler= async (e)=>{
+    e.preventDefault()
+    const {title,description} = e.target.elements
+      const response=await axios.post("http://127.0.0.1:3000/notes",{
+        title:title.value,
+        description: description.value
+      })
+      title.value="";
+      description.value="";
+      console.log(response.data.message)
+      fetchNotes()
+      
+  }
+
   const handleEdit=async ()=>{
-    
+
   }
 
   return (
     <>
+      <div>
+        <form className="submitNotes" onSubmit={submitHandler}  >
+          <label>
+            Title : 
+          <input  name="title" type="text" />
+          </label>
+          <label>
+            Description :
+          <input name="description" type="text" />
+          </label>
+          <button type="submit">Add Note</button>
+        </form>
+      </div>
       <div id="notes">
         {notes.map((note) => (
           <div id="note">
