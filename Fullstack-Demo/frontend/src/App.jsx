@@ -7,14 +7,14 @@ function App() {
   const [isEdit, setIsEdit] = useState(false);
 
   const fetchNotes = async () => {
-    const axData = await axios.get("http://127.0.0.1:3000/notes");
+    const axData = await axios.get("https://backend-vhcn.onrender.com/notes");
     // console.log(axData)
     setNotes(axData.data.notes);
   };
 
   const handleDelete = async (id) => {
     console.log(id);
-    const response = await axios.delete(`http://127.0.0.1:3000/notes/${id}`);
+    const response = await axios.delete(`https://backend-vhcn.onrender.com/notes/${id}`);
     fetchNotes();
     // console.log(response)
   };
@@ -22,7 +22,7 @@ function App() {
   const submitHandler = async (e) => {
     e.preventDefault();
     const { title, description } = e.target.elements;
-    const response = await axios.post("http://127.0.0.1:3000/notes", {
+    const response = await axios.post("https://backend-vhcn.onrender.com/notes", {
       title: title.value,
       description: description.value,
     });
@@ -38,7 +38,7 @@ function App() {
     //     console.log(newDesc)
 
 
-    const response=await axios.patch(`http://127.0.0.1:3000/notes/${noteId}`,{
+    const response=await axios.patch(`https://backend-vhcn.onrender.com/${noteId}`,{
       data:{
         title:newTitle,
       description:newDesc
