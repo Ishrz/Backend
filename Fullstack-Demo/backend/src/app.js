@@ -32,10 +32,10 @@ app.post("/notes", async (req, res) => {
   });
 });
 
+
 app.patch("/notes/:id", async (req, res) => {
   const  {id}  = req.params;
   const data = req.body.data;
-
   const notes = await notesModel.findByIdAndUpdate(
     id,
     {
