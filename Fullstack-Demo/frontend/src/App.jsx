@@ -38,7 +38,7 @@ function App() {
     //     console.log(newDesc)
 
 
-    const response=await axios.patch(`https://backend-vhcn.onrender.com/${noteId}`,{
+    const response=await axios.patch(`https://backend-vhcn.onrender.com/notes/${noteId}`,{
       data:{
         title:newTitle,
       description:newDesc
