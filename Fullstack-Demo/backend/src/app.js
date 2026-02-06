@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path=require("path")
 const notesModel = require("./models/notes.model");
 
 const app = express();
@@ -8,6 +9,8 @@ app.use(cors({
     Domain:["http://localhost:5173/"]
 }));
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, ".." ,"public")))
 
 app.get("/notes", async (req, res) => {
   const notes = await notesModel.find();
@@ -61,5 +64,9 @@ app.delete("/notes/:id",async (req, res) => {
         note:note
     })
 });
+
+app.get('*name',(req,res)=>{
+  res.sendFile(path.join(__dirname , "..", "public","index.html"))
+})
 
 module.exports = app;
