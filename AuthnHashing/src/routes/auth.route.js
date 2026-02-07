@@ -1,10 +1,12 @@
 const express= require("express")
 const userModel=require("../models/user.model.js")
 const jwt=require("jsonwebtoken")
+const coockieParser= require("cookie-parser")
 const crypto = require("crypto")
 
 const authRouter=express.Router()
 
+authRouter.use(coockieParser())
 
 authRouter.post("/register", async(req,res)=>{
     const { name, email ,password} = req.body
@@ -39,10 +41,14 @@ authRouter.post("/register", async(req,res)=>{
     })
         // console.log(user)
     const token=jwt.sign({name,email} , process.env.JWT_SECRET)
+    res.cookie("coockieTokenJWT",token)
 
     res.json({
         message:"user registerd successfuly",
-        userInfo:user,
+        userInfo:{
+            userName:user.name,
+            userEmail:user.email
+        },
         Jwt_Token:token
     })
 
