@@ -64,13 +64,13 @@ userRoute.post("/signin",async(req,res)=>{
 })
 
 const auth=(req,res,next)=>{
-const token=req.headers.token
-
+const token=req.headers.authorization
+console.log(token)
 try{
-    const {username}=jwt.verify(token,process.env.JWT_SECRET)
+    const {email}=jwt.verify(token,process.env.JWT_SECRET)
 
-    if(username){
-        req.username=username
+    if(email){
+        req.email=email
         next()
     }else{
         res.json("not authenticated user")
@@ -82,24 +82,29 @@ try{
 
 }
 
-userRoute.get("/me",auth,(req,res)=>{
+userRoute.get("/me",auth,async(req,res)=>{
         
  
-        const username=req.username
-        const currentUser=allUsers.find(u => u.username === username)
+        const email=req.email
+        // const currentUser=allUsers.find(u => u.username === username)
 
-        console.group("Token check")
-        console.log(currentUser)
+        try{
+        const user=await userModel.findOne({email})
 
-        if(currentUser){
+        console.log(`user from db : ${user}`)
+
+        if(user.email){
             res.json({
                 message:"Heres your requested data",
-                data:{username:currentUser.username},
+                data:{name:user.name, email:user.email},
                 // token:decodedToken
             })
-        }else{
-            res.json("unauhtenticated User")
         }
+        }catch(err){
+            console.log(`user not found`)
+            res.json({message:"unauhtenticated User"})
+        }
+        
 })
 
 
