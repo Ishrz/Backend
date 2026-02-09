@@ -16,7 +16,7 @@ userRoute.post("/signup", async(req,res)=>{
     //     password:password
     // })
 
-    const createdUser= userModel.create({
+    const createdUser=await userModel.create({
         name,
         email,
         password
@@ -30,18 +30,23 @@ userRoute.post("/signup", async(req,res)=>{
 userRoute.post("/signin",async(req,res)=>{
         const {email,password} = req.body
 
-        const currentUser=allUsers.find(u=> (u.username === username && u.password === password))
+        // const currentUser=allUsers.find(u=> (u.username === username && u.password === password))
 
-        // const user=userModel.
+    
+        try{
+        const user=await userModel.findOne({email})
+            console.log(user)
+            if(user){
 
-            if(currentUser){
-                console.log("before Token",allUsers)
 
-                // const token=getToken()
-                // currentUser.token=token
                 const token=jwt.sign({
-                    ...currentUser
+                    id:user._id,
+                    email:user.email
+
                 }, process.env.JWT_SECRET)
+
+                res.header("Authorization",token)
+                
 
                 res.json({
                     message:"you are now login to portal",
@@ -51,9 +56,10 @@ userRoute.post("/signin",async(req,res)=>{
                 console.log("User not found")
 
             res.json({message:"Invalid Credential"})
+            }
+        }catch(err){
+            console.log(`user not in db error occure : ${err}`)
         }
-
-        console.log("from end of post method code: ",allUsers)
         
 })
 
