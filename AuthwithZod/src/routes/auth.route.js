@@ -1,42 +1,72 @@
-const express=require("express")
-const userModel= require("../models/user.model")
-const bcrypt = require("bcrypt")
+const express = require("express");
+const userModel = require("../models/user.model");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
 
-const authRouter=express.Router()
+const authRouter = express.Router();
 
+authRouter.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
 
-authRouter("/register", async (req,res)=>{
+  if (!name) return res.json("please enter name");
+  if (!email) return res.json("email is required");
+  if (!password) return res.json("password is required");
 
-    const {name,email,password} = req.body
+  try {
+    const userCheck = await userModel.findOne({ email });
 
-    if(!name) return res.json("please enter name")
-    if(!email) return res.json("email is required")
-    if(!password) return res.json("password is required")
+    if (userCheck?.email == email)
+      return res.json(`User already registered with this email id :${email}`);
 
-    try{
-    const userCheck=await userModel.findOne({email})
-
-    if(userCheck?.email == email) return res.json(`User already registered with this email id :${email}`) 
-    
+    const hashPass = await bcrypt.hash(password, 5);
+    console.log(hashPass);
     const user = userModel.create({
-        name,
-        email,
-        password:
-    })
+      name,
+      email,
+      password: hashPass,
+    });
 
-    }catch(err){
-        res.json({message:`something went wrong, error :${err}`})
-        console.log(`Error : ${err}`)
+    res.status(201).json({
+      message: "You are registered sucessfully",
+    });
+  } catch (err) {
+    res.json({ message: `something went wrong, error :${err}` });
+    console.log(`Error : ${err}`);
+  }
+});
+
+authRouter.post("/signin", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email) return res.json("Email field is empty");
+  if (!password) return res.json("Password filed is empty");
+
+  try {
+    const user = await userModel.findOne({ email });
+
+    if (!user) return res.json("incorrect email id");
+    const hashPass = await bcrypt.compare(password, user.password);
+    // console.log(hashPass)
+    if (hashPass && user.email == email) {
+      const token = jwt.sign(
+        { name: user.name, id: user._id },
+        process.env.JWT_SECRETE
+      );
+
+      res.cookie("jwtToken", token);
+
+      res.status(200).json({
+        message: `welcome ${user.name} your are login on portal`,
+      });
+    } else {
+      return res.json({
+        message: "Wrong credentials",
+      });
     }
+  } catch (err) {
+    res.json("something went wrong");
+    console.log(`Error : ${err}`);
+    return;
+  }
+});
 
-
-})
-
-authRouter("/signin", async(req,res)=>{
-
-})
-
-
-
-
-module.exports=authRouter
+module.exports = authRouter;
