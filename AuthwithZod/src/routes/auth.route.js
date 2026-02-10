@@ -1,25 +1,37 @@
 const express = require("express");
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { z } = require("zod");
 
 const authRouter = express.Router();
 
 authRouter.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (!name) return res.json("please enter name");
-  if (!email) return res.json("email is required");
-  if (!password) return res.json("password is required");
+  const registrationSchema = z.object({
+    name: z.string().toLowerCase().min(3).max(15),
+    email: z.string().toLowerCase().email(),
+    password: z.string().min(5).max(10),
+  });
+
+  const parseData = registrationSchema.safeParse({ name, email, password });
+
+  if (!parseData.success) {
+    res.json({ error: parseData.error.flatten() });
+  }
+
 
   try {
+    const { email, name, password } = parseData.data;
+
     const userCheck = await userModel.findOne({ email });
 
     if (userCheck?.email == email)
       return res.json(`User already registered with this email id :${email}`);
 
     const hashPass = await bcrypt.hash(password, 5);
-    console.log(hashPass);
+    // console.log(hashPass);
     const user = userModel.create({
       name,
       email,
@@ -37,10 +49,21 @@ authRouter.post("/register", async (req, res) => {
 
 authRouter.post("/signin", async (req, res) => {
   const { email, password } = req.body;
-  if (!email) return res.json("Email field is empty");
-  if (!password) return res.json("Password filed is empty");
+
+  const loginSchema = z.object({
+    email:z.string().email(),
+    password:z.string().max(15).min(5)
+  })
+
+const parsedLoginData=loginSchema.safeParse({email,password})
+
+if(!parsedLoginData.success) return res.json({
+    error: parsedLoginData.error.flatten()
+})
+
 
   try {
+    const {email,password} = parsedLoginData.data
     const user = await userModel.findOne({ email });
 
     if (!user) return res.json("incorrect email id");
@@ -70,33 +93,30 @@ authRouter.post("/signin", async (req, res) => {
   }
 });
 
+const auth = async (req, res, next) => {
+  console.log("inside the auth route");
+  const { jwtToken } = req.cookies;
 
-const auth =async (req,res,next)=>{
-    console.log("inside the auth route")
-        const {jwtToken} = req.cookies
+  // console.log(jwtToken)
+  try {
+    const jwtCheck = jwt.verify(jwtToken, process.env.JWT_SECRETE);
 
-        // console.log(jwtToken)
-    try{
-        const jwtCheck= jwt.verify(jwtToken,process.env.JWT_SECRETE)
+    console.log(jwtCheck);
+    req.id = jwtCheck.id;
+    next();
+  } catch (err) {
+    console.log(`something went wrong at auth middleware`);
+    res.json("something went wrong please try again");
+  }
+  next();
+};
 
-        console.log(jwtCheck)
-        req.id=jwtCheck.id
-        next()
+authRouter.get("/get-me", auth, async (req, res) => {
+  console.log("INside the geet-me route now first line");
 
-    }catch(err){
-        console.log(`something went wrong at auth middleware`)
-        res.json("something went wrong please try again")
-    }
-    next()
-
-}
-
-authRouter.get("/get-me",auth,async (req,res)=>{
-    console.log("INside the geet-me route now first line")
-
-    const id = req?.id
-    console.log(id)
-    res.status(200).json({message:"request successfull"})
-})
+  const id = req?.id;
+  console.log(id);
+  res.status(200).json({ message: "request successfull" });
+});
 
 module.exports = authRouter;
