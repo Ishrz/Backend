@@ -44,6 +44,7 @@ authRouter.post("/signin", async (req, res) => {
     const user = await userModel.findOne({ email });
 
     if (!user) return res.json("incorrect email id");
+
     const hashPass = await bcrypt.compare(password, user.password);
     // console.log(hashPass)
     if (hashPass && user.email == email) {
@@ -68,5 +69,34 @@ authRouter.post("/signin", async (req, res) => {
     return;
   }
 });
+
+
+const auth =async (req,res,next)=>{
+    console.log("inside the auth route")
+        const {jwtToken} = req.cookies
+
+        // console.log(jwtToken)
+    try{
+        const jwtCheck= jwt.verify(jwtToken,process.env.JWT_SECRETE)
+
+        console.log(jwtCheck)
+        req.id=jwtCheck.id
+        next()
+
+    }catch(err){
+        console.log(`something went wrong at auth middleware`)
+        res.json("something went wrong please try again")
+    }
+    next()
+
+}
+
+authRouter.get("/get-me",auth,async (req,res)=>{
+    console.log("INside the geet-me route now first line")
+
+    const id = req?.id
+    console.log(id)
+    res.status(200).json({message:"request successfull"})
+})
 
 module.exports = authRouter;
