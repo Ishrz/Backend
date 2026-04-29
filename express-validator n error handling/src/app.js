@@ -16,7 +16,7 @@ app.use("/api/v1/auth" , authRouter)
 
 
 
-//global error handler
+
 app.use(errorHandler)
 
 
