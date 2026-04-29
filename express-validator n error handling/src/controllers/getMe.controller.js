@@ -13,12 +13,6 @@ const getMe = async (req,res,next) =>{
         password
     }
 
-    console.log(firstName)
-
-    console.log("befor throwing")
-    throw new Error("user already exist")
-
-        console.log("after throwing")
 
     res.status(200).json({
         message:"Hello to userprofile",
@@ -28,7 +22,7 @@ const getMe = async (req,res,next) =>{
 
     }catch(err){
         console.log("catch hit : "  +err)
-        err.status = 409
+        // err.status = 409
         next(err)
 
     }
