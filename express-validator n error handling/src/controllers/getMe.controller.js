@@ -1,7 +1,9 @@
 
 
-const getMe = async (req,res) =>{
-    console.log("geMe hit")
+const getMe = async (req,res,next) =>{
+    try{
+        console.log("geMe hit")
+
 
     const {username , email ,password} = req.body
 
@@ -11,13 +13,25 @@ const getMe = async (req,res) =>{
         password
     }
 
+    console.log(firstName)
 
+    console.log("befor throwing")
+    throw new Error("user already exist")
+
+        console.log("after throwing")
 
     res.status(200).json({
         message:"Hello to userprofile",
         user,
         success : true
     })
+
+    }catch(err){
+        console.log("catch hit : "  +err)
+        err.status = 409
+        next(err)
+
+    }
 }
 
 

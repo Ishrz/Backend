@@ -1,6 +1,11 @@
+//lib
 import express from "express"
 
+//routes
 import authRouter from "./routes/auth.route.js"
+
+//middlewares
+import errorHandler from "./middlewares/error.middleware.js"
 
 const app = express()
 
@@ -11,7 +16,8 @@ app.use("/api/v1/auth" , authRouter)
 
 
 
-
+//global error handler
+app.use(errorHandler)
 
 
 export default app
