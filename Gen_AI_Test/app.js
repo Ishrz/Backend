@@ -1,13 +1,39 @@
 import "dotenv/config"
 import {ChatMistralAI} from "@langchain/mistralai"
-import {HumanMessage} from "langchain"
+import {createAgent, HumanMessage ,tool} from "langchain"
+import * as z from "zod";
 import readline from "readline/promises";
-import stream from "stream";
+// import stream from "stream";
+import { sendEmail } from "./mail.service.js";
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+const emailTool = tool(
+        sendEmail,
+        {
+            name:"emailTool",
+            description:"send email to provided email with content",
+            schema: z.object({
+                to:z.string().describe("recepient of email"),
+                html:z.string().describe("html content of email"),
+                subject:z.string().describe("subject of email")
+            })
+        }
+)
+
+
 
 const mistralLlm = new ChatMistralAI({
     model:"mistral-small",
-     temperature: 0,
-    maxRetries: 2,
+})
+
+const agent = createAgent({
+    model:mistralLlm,
+    tools:[emailTool]
+
 })
 
 // ANSI color codes
@@ -20,27 +46,30 @@ const colors = {
 };
 
 // Create a null stream to suppress readline's automatic echo
-const nullStream = new stream.Writable({
-    write() {}
-});
+// const nullStream = new stream.Writable({
+//     write() {}
+// });
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: nullStream,
-});
 
 const messages= []
 
 while(true){
-    const userInput = await rl.question("\x1b[32mYou:\x1b[0m ")
+   try {
+     const userInput = await rl.question("\x1b[32mYou:\x1b[0m ")
     
     messages.push(new HumanMessage(userInput))
 
-    const response = await mistralLlm.invoke(messages)
+    const response = await agent.invoke({messages})
 
-    messages.push(response.content)
+    // console.log(response)
 
-    console.log(colors.green + "\n🤖 AI: " + colors.reset + colors.cyan + response.text + colors.reset)
+    messages.push(response.messages[response.messages.length-1])
+
+    console.log(colors.green + "\n🤖 AI: " + colors.reset + colors.cyan + response.messages[response.messages.length-1].content + colors.reset)
     console.log(colors.gray + "\n" + "─".repeat(50) + colors.reset)
-    console.log(messages)
+    
+   } catch (error) {
+    console.log(error)
+   }
+    // console.log(messages)
 }

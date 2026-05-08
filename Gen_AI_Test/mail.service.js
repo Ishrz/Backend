@@ -40,6 +40,8 @@ export const sendEmail = async ({to, subject, text=null, html}) => {
   } catch (error) {
     console.log("error sending email : ", error);
   }
+
+  return `email send successfully to : ${to}`
 };
 
 export default transporter;
