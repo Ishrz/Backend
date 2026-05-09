@@ -1,40 +1,12 @@
 import "dotenv/config"
-import {ChatMistralAI} from "@langchain/mistralai"
-import {createAgent, HumanMessage ,tool} from "langchain"
-import * as z from "zod";
+import { HumanMessage} from "langchain"
 import readline from "readline/promises";
-// import stream from "stream";
 import { sendEmail } from "./mail.service.js";
-
+import { agent } from "./ai.service.js";
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-
-const emailTool = tool(
-        sendEmail,
-        {
-            name:"emailTool",
-            description:"send email to provided email with content",
-            schema: z.object({
-                to:z.string().describe("recepient of email"),
-                html:z.string().describe("html content of email"),
-                subject:z.string().describe("subject of email")
-            })
-        }
-)
-
-
-
-const mistralLlm = new ChatMistralAI({
-    model:"mistral-small",
-})
-
-const agent = createAgent({
-    model:mistralLlm,
-    tools:[emailTool]
-
-})
 
 // ANSI color codes
 const colors = {
@@ -44,12 +16,6 @@ const colors = {
     gray: "\x1b[90m",
     reset: "\x1b[0m"
 };
-
-// Create a null stream to suppress readline's automatic echo
-// const nullStream = new stream.Writable({
-//     write() {}
-// });
-
 
 const messages= []
 
@@ -71,5 +37,5 @@ while(true){
    } catch (error) {
     console.log(error)
    }
-    // console.log(messages)
+    
 }
